@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>躺平计算器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>躺平计算器</h1>
+        <label for="principal">拥有的本金（元）:</label>
+        <input type="number" id="principal" placeholder="输入你的本金">
+
+        <label for="annual_interest_rate">每年的利率 (%):</label>
+        <input type="number" id="annual_interest_rate" step="0.01" placeholder="输入每年的利率">
+
+        <label for="daily_expense">每天的花费（元）:</label>
+        <input type="number" id="daily_expense" placeholder="输入每天的花费">
+
+        <button onclick="calculate()">计算</button>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        function calculate() {
+            // 获取输入值
+            const principal = parseFloat(document.getElementById('principal').value);
+            const annualInterestRate = parseFloat(document.getElementById('annual_interest_rate').value) / 100;
+            const dailyExpense = parseFloat(document.getElementById('daily_expense').value);
+
+            if (isNaN(principal) || isNaN(annualInterestRate) || isNaN(dailyExpense) || principal <= 0 || annualInterestRate < 0 || dailyExpense <= 0) {
+                document.getElementById('result').innerText = "请输入有效的数值";
+                return;
+            }
+
+            // 将年利率转换为每日利率
+            const dailyInterestRate = Math.pow(1 + annualInterestRate, 1 / 365) - 1;
+
+            // 初始化变量
+            let days = 0;
+            let currentBalance = principal;
+
+            if (currentBalance * dailyInterestRate - dailyExpense > 0) {
+                document.getElementById('result').innerText = "你可以维持生活的年数是：无限！";
+                return;
+            }
+
+            // 每天计算支出和利息，直到余额耗尽
+            while (currentBalance > 0) {
+                currentBalance += currentBalance * dailyInterestRate - dailyExpense;
+                days += 1;
+            }
+
+            // 计算年数
+            const years = days / 365;
+            document.getElementById('result').innerText = `你可以维持生活的年数是：${years.toFixed(2)}年`;
+        }
+    </script>
+</body>
+</html>
