@@ -1,4 +1,4 @@
 {
   "message": "Hello, this is static JSON data!",
-  "available": false
+  "available": true
 }
